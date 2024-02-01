@@ -6,7 +6,7 @@ export default function MealGrid({ meals }) {
     <ul className={styles.meals}>
       {meals.map((meal) => (
         <li key={meal.slug}>
-          <MealItem {...meal} />
+          <MealItem {...meal}  key={meal.slug}/>
         </li>
       ))}
     </ul>

@@ -1,35 +1,16 @@
 import { redirect } from "next/navigation";
-
 import { shareMeal } from "@/libs/actions";
 import ImagePicker from "../image-picker/image-picker";
 import MealsButtonSubmit from "../meals-button-submit/meals-button-submit";
 import styles from "./share-meal-form.module.css";
-import { revalidatePath } from "next/cache";
+import { handleSubmitAction } from "@/libs/meals";
 
-export default function ShareMealForm() {
-  async function handleSubmitAction(formData) {
-    "use server";
+export default function ShareMealForm({imageURL , setImageURL}) {
 
-    const meal = {
-      creator: formData.get("name"),
-      creator_email: formData.get("email"),
-      summary: formData.get("summary"),
-      instructions: [...formData.get("instructions").split("\n")],
-      image: formData.get("image"),
-      title: formData.get("title"),
-    };
-    const instruction = formData.get("instructions").split("\n");
-    if (instruction.length > 0) {
-      meal.instructions = [...instruction];
-    }
-
-    await shareMeal(meal);
-    revalidatePath("/meals")
-    redirect("/meals");
-  }
+  const handleForm = handleSubmitAction.bind(null , imageURL)
 
   return (
-    <form className={styles.form} action={handleSubmitAction}>
+    <form className={styles.form} action={handleForm}>
       <div className={styles.row}>
         <p>
           <label htmlFor="name">Your name</label>
@@ -57,7 +38,7 @@ export default function ShareMealForm() {
           required
         ></textarea>
       </p>
-      <ImagePicker label="an image" name="image" />
+      <ImagePicker label="an image" name="image"   setImageURL={setImageURL}/>
 
       <p className={styles.actions}>
         <MealsButtonSubmit />
